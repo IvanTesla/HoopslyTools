@@ -1,0 +1,10 @@
+{
+  "name": "com.hoopsly.hoopslytools",
+  "version": "0.9.7",
+  "displayName": "Hoopsly Tools",
+  "unity": "2020.3",
+  "type": "tool",
+  "dependencies" : {
+      "com.unity.editorcoroutines" : "1.0.0"
+  }
+}
