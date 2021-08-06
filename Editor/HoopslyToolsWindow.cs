@@ -27,12 +27,23 @@ public class HoopslyToolsWindow : EditorWindow
 
     private int m_count1 = 0;
     private int m_count2 = 0;
+    private int m_count3 = 0;
+    private bool m_isCounting = false;
+    EditorCoroutine m_routine;
 
     [MenuItem("Hoopsly/Tools Window")]
     static void Init()
     {
         HoopslyToolsWindow window = (HoopslyToolsWindow)EditorWindow.GetWindow(typeof(HoopslyToolsWindow), false, "Core tools");
         window.Show();
+    }
+
+    private void OnDestroy()
+    {
+        if(m_isCounting)
+        {
+            this.StopCoroutine(m_routine);
+        }
     }
 
     private void OnGUI()
@@ -67,6 +78,25 @@ public class HoopslyToolsWindow : EditorWindow
                 Count2();
             }
             GUILayout.EndHorizontal();
+            GUILayout.Space(25);
+            GUILayout.Label("Auto counter routine", EditorStyles.label);
+            GUILayout.Space(5);
+            GUILayout.BeginHorizontal();
+            if(m_isCounting)
+            {
+                Rect r3 = EditorGUILayout.BeginVertical();
+                EditorGUI.ProgressBar(r3, (float)m_count3 / 100f, "Downloading: " + m_count3.ToString());
+                GUILayout.Space(20);
+                EditorGUILayout.EndVertical();
+            }
+            else
+            {
+                if (GUILayout.Button("DOWNLOAD"))
+                {
+                    m_routine = this.StartCoroutine(AutoCounter());
+                }
+            }
+            GUILayout.EndHorizontal();
         }
     }
 
@@ -86,5 +116,17 @@ public class HoopslyToolsWindow : EditorWindow
         else
             m_count2 = 0;
         Repaint();
+    }
+
+    private IEnumerator AutoCounter()
+    {
+        m_isCounting = true;
+        for (int i = 0; i < 100; i++)
+        {
+            m_count3 = i;
+            yield return new EditorWaitForSeconds(.1f);
+            Repaint();
+        }
+        m_isCounting = false;
     }
 }
